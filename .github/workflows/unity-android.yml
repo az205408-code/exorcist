@@ -4,34 +4,37 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  pull_request:
 
 jobs:
   build:
+    name: Build Android
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          lfs: true
+      # 1. Checkout repository
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 2. Cache Unity
       - name: Cache
         uses: actions/cache@v3
         with:
           path: Library
-          key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/manifest.json') }}
+          key: Library-${{ runner.os }}
           restore-keys: |
-            Library-${{ runner.os }}-
+            Library-
 
-      - name: Build Android
+      # 3. Build with Unity
+      - name: Build Android Player
         uses: game-ci/unity-builder@v2
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
+          unityVersion: 2021.3.19f1
           targetPlatform: Android
+          projectPath: Exorcist_Full_Unity_2021_Project   # 👈 اینو عوض کردم
 
+      # 4. Upload APK as artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Exorcist-APK
-          path: build/Android/*.apk
+          name: Exorcist-Android
+          path: build/Android
