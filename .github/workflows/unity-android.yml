@@ -24,6 +24,7 @@ jobs:
           projectPath: project
           unityVersion: 2021.3.20f1
           targetPlatform: Android
+          allowDirtyBuild: true
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
