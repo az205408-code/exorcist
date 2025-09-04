@@ -1,40 +1,32 @@
-name: Build Android (Unity)
+name: Build Unity Android
 
 on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
   build:
-    name: Build Android
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout repository
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Cache Unity
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          path: Library
-          key: Library-${{ runner.os }}
-          restore-keys: |
-            Library-
+      - name: Unzip Unity Project
+        run: |
+          mkdir project
+          unzip -q Exorcist_Full_Unity_2021_Project.zip -d project
+          ls project
 
-      # 3. Build with Unity
       - name: Build Android Player
         uses: game-ci/unity-builder@v2
         with:
-          unityVersion: 2021.3.19f1
+          projectPath: project
+          unityVersion: 2021.3.20f1
           targetPlatform: Android
-          projectPath: Exorcist_Full_Unity_2021_Project   # 👈 اینو عوض کردم
 
-      # 4. Upload APK as artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Exorcist-Android
-          path: build/Android
+          name: Android-APK
+          path: build/Android/*.apk
