@@ -32,7 +32,7 @@ jobs:
           targetPlatform: Android
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Exorcist-APK
           path: build/Android/*.apk
